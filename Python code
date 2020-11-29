@@ -1,0 +1,32 @@
+'''
+
+This is a Python script that will take a disk image as an input, 
+locate file signatures, properly recover user generated files without 
+corruption, and generate a SHA-256 hash for each file recovered.
+
+Contributors: Sadok Aounallah and Hannah Strother
+
+'''
+
+import objects
+
+# taking in the disk image
+# I don't know if this is correct
+with open ("/dev/sda", 'rb') as f:
+    with open ("~/Project2Updated.dd", "wb") as i:
+        data = i.read()
+
+# locate file signatures
+# website that might help: https://github.com/schlerp/pyfsig
+
+# recover user generated files without corruption and generate 
+# a SHA-256 hash for each file recovered
+'''
+
+I found a link that might help with this type of hash:
+https://github.com/PacktPublishing/Python-Digital-Forensics-Cookbook/blob/
+master/Chapter01/hashing.py
+
+See if you can make sense of it because I was confused.
+
+'''
