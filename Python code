@@ -13,8 +13,7 @@ import re
 
 # taking in the disk image
 with open ("Project2Updated.dd", 'rb') as f:
-    with open ("~/RecoveredFiles", "wb") as i:
-        data = i.read()
+       data = f.read()
 
 # locate file signatures
 '''
