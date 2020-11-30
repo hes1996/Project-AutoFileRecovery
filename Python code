@@ -4,29 +4,39 @@ This is a Python script that will take a disk image as an input,
 locate file signatures, properly recover user generated files without 
 corruption, and generate a SHA-256 hash for each file recovered.
 
-Contributors: Sadok Aounallah and Hannah Strother
+Contributors: Hannah Strother and Sadok Aounallah
 
 '''
 
 import objects
+import re
 
 # taking in the disk image
-# I don't know if this is correct
-with open ("/dev/sda", 'rb') as f:
-    with open ("~/Project2Updated.dd", "wb") as i:
+with open ("Project2Updated.dd", 'rb') as f:
+    with open ("~/RecoveredFiles", "wb") as i:
         data = i.read()
 
 # locate file signatures
-# website that might help: https://github.com/schlerp/pyfsig
+'''
+this should find all the file types except mpg and jpg
+fileSig1 = re.findall('(%PDF|BM|GIF87a|GIF89a|PK..|PK......|AVI LIST|%PNG....)', data)
+
+this should find mpg
+fileSig2 = re.findall('00 00 01 BX', data)
+
+this should find jpg
+fileSig3 = re.findall('FF D9', data)
+'''
 
 # recover user generated files without corruption and generate 
 # a SHA-256 hash for each file recovered
 '''
+I found two links that might help:
 
-I found a link that might help with this type of hash:
 https://github.com/PacktPublishing/Python-Digital-Forensics-Cookbook/blob/
 master/Chapter01/hashing.py
 
-See if you can make sense of it because I was confused.
+https://github.com/nneonneo/ntfsrecover/blob/master/ntfsrecover.py
 
+See if you can make sense of these because I am super confused.
 '''
