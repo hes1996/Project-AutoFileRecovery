@@ -8,34 +8,70 @@ Contributors: Hannah Strother and Sadok Aounallah
 
 '''
 
-import objects
+import hashlib
 import re
+import binascii
+
+count = 0
 
 # taking in the disk image
-with open ("Project2Updated.dd", 'rb') as f:
-       data = f.read()
+# 'rb' means we are reading the binary contents of the file
+try:
+    with open (Project2Updated.dd, "rb") as Proj_file:
+        data = Proj_file.read()
+except FileNotFoundError:
+    print("File was not found")
+    exit()
+    
+# Creating project file into hexdump
+hexdump = binascii.hexlify(data)
 
-# locate file signatures
-'''
-this should find all the file types except mpg and jpg
-fileSig1 = re.findall('(%PDF|BM|GIF87a|GIF89a|PK..|PK......|AVI LIST|%PNG....)', data)
+# Regular expressions of file header and file footer
+regexMPG = "000001bx(.*?)000001b7"
+RecoverFiles(regexMPG)
+regexPDF = "25504446(.*?)2525454f46"
+RecoverFiles(regexPDF)
+regexGIF = "47494638(.*?)003b"
+RecoverFiles(regexGIF)
+regexZIP = "504b0304(.*?)504b0506"
+RecoverFiles(regexZIP)
+regexJPG = "ffd8(.*?)ffd9"
+RecoverFiles(regexJPG)
+regexPNG = "89504e47(.*?)49454e44ae426082"
+RecoverFiles(regexPNG)
 
-this should find mpg
-fileSig2 = re.findall('00 00 01 BX', data)
+# I'm not sure how to find the other 3 files using file header and file size
+# Don't know how to make regular expressions with header and file size
+# regexBMP
+# regexDOCX
+# regexAVI
 
-this should find jpg
-fileSig3 = re.findall('FF D9', data)
-'''
+def RecoverFiles(regularEx): 
+    # Find values between file header and file footer
+    content = re.findall(regularEx, hexdump.decode())
+    # If found proceed, else abort
+    if content:
+        count = count + 1
+        # Add header, content, and footer together for full file
+        for i in content:
+            fullFile = header + i + footer
+            # convert hexdump into binary
+            convertedFile = binascii.a2b_hex(fullFile)
+            # Search converted file for filename and offsets
+            # Print (filename + ", Start Offset: " + startoffset +
+            # ", End Offset: " + endoffset'\n')
+            # hash(convertedFile)
+    else:
+        print("No files detected")
 
 # recover user generated files without corruption and generate 
 # a SHA-256 hash for each file recovered
 '''
-I found two links that might help:
-
-https://github.com/PacktPublishing/Python-Digital-Forensics-Cookbook/blob/
-master/Chapter01/hashing.py
-
-https://github.com/nneonneo/ntfsrecover/blob/master/ntfsrecover.py
-
-See if you can make sense of these because I am super confused.
+def hash(file)
+    with open(file, "rb") as i:
+        # read entire file as bytes
+        bytes = f.read()
+        readable_hash = hashlib.sha256(bytes).hexadigest()
+        print("SHA-256: " + readable_hash'\n')
+        print("\n")
 '''
