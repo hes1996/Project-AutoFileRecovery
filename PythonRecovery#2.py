@@ -11,13 +11,14 @@ Contributors: Hannah Strother and Sadok Aounallah
 import hashlib
 import re
 import binascii
+import fileinput
 
 count = 0
 
 # taking in the disk image
 # 'rb' means we are reading the binary contents of the file
 try:
-    with open (Project2Updated.dd, "rb") as Proj_file:
+    with open (fileinput.input(), "rb") as Proj_file:
         data = Proj_file.read()
 except FileNotFoundError:
     print("File was not found")
@@ -57,23 +58,23 @@ def RecoverFiles(regularEx):
     # If found proceed, else abort
     #
     if content == regexPNG:
-        #Do such
-    elif content == regexGIF:
-        #do such
-    elif content == regexJPG:
-        #do such
+        print("")
+    elif content==regexGIF:
+        print("")
+    elif (content == regexJPG):
+        print("")
     elif content == regexZIP:
-        #do such
+        print("")
     elif content == regexMPG:
-        #do such
+        print("")
     elif content == regexDOCX:
-        #do such
+        print("")
     elif content == regexPDF:
-        #do such
+        print("")
     elif content == regexBMP:
-        #do special case
+        print("")
     elif content == regexAVI:
-        #do special case
+        print("")
     else:
         print("no such file available")
 
