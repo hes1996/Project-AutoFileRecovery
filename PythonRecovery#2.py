@@ -11,93 +11,112 @@ Contributors: Hannah Strother and Sadok Aounallah
 import hashlib
 import re
 import binascii
-import fileinput
+import sys
+import os , struct
 
-count = 0
+regexPNG = ""
+regexGIF = ""
+regexJPG = ""
+regexZIP = ""
+regexMPG = ""
+regexDOCX = ""
+regexPDFOne = ""
+regexPDFTwo = ""
+regexPDFThree = ""
+regexPDFFour = ""
+regexBMP = ""
+regexAVI = ""
+startfilecounter = 0
 
-# taking in the disk image
-# 'rb' means we are reading the binary contents of the file
+def RecoverFiles(regularEx,filecounterIn): 
+# Find values between file header and file footer
+    content = re.findall(regularEx, hexdump.decode())
+    counter = 0
+    print(type(filecounterIn))
+    i = filecounterIn
+    if bool(content):
+        print("This is limit: " + str(len(content)))
+        print("This counter is: " + str(counter))
+        while (counter < len(content) ):
+            if content[counter].find(regexPNG) != -1:
+                print("File" + str(i) + ".PNG Start Offset: " + str(struct.unpack(content[counter])) + " End Offset: ")
+                i += 1
+            elif content[counter].find(regexGIF) != -1: 
+                print("File" + str(i) + ".gif Start Offset: " + " End Offset: ")
+                i = i + 1
+            elif content[counter].find(regexJPG) != -1: 
+                print("File" + str(i) + ".gpg Start Offset: " + " End Offset: ")
+                i = i + 1
+            elif content[counter].find(regexZIP) != -1:
+                print("File" + str(i) + ".zip Start Offset: " + " End Offset: ")
+                i = i + 1
+            elif content[counter].find(regexMPG) != -1:
+                print("File" + str(i) + ".MPG Start Offset: " + " End Offset: ")
+                i = i + 1
+            elif content[counter].find(regexDOCX) != -1:
+                print("File" + str(i) + ".docx Start Offset: " + " End Offset: ")
+                i = i + 1
+            elif regexPDFOne in content or regexPDFTwo in content or regexPDFThree in content or regexPDFFour in content:
+                print("File" + str(i) + ".pdf Start Offset: " + " End Offset: ")
+                i = i + 1
+            elif content[counter].find(regexBMP) != -1:
+                print("File" + str(i) + ".bmp Start Offset: " + " End Offset: ")
+                i = i + 1
+            elif content[counter].find(regexAVI) != -1:
+                print("File" + str(i) + ".avi Start Offset: " + " End Offset: ")
+                i = i + 1
+            counter = counter + 1
+    return i
+
+
+
+
+
+    # taking in the disk image
+    # 'rb' means we are reading the binary contents of the file
+ 
+
 try:
-    with open (fileinput.input(), "rb") as Proj_file:
+    with open (input("Enter disk image name: "), "rb") as Proj_file:
         data = Proj_file.read()
+        startfilecounter = 1
+        hexdump = binascii.hexlify(data)
+        regexMPG = "000001bx(.*?)000001b7"
+        print("MPG")
+        startfilecounter = RecoverFiles(regexMPG,startfilecounter)
+        regexPDFOne = "25504446(.*?)2525454f46"
+        regexPDFTwo = "25504446(.*?)0A2525454F460A" 
+        regexPDFThree = "25504446(.*?)0D0A2525454F460D0A"
+        regexPDFFour = "25504446(.*?)0D2525454F460D"
+        print("PDF")
+        startfilecounter = RecoverFiles(regexPDFOne,startfilecounter)
+        regexGIF = "47494638(.*?)003b"
+        print("GIF")
+        startfilecounter = RecoverFiles(regexGIF,startfilecounter)
+        regexZIP = "504b0304(.*?)504b0506"
+        print("ZIP")
+        startfilecounter = RecoverFiles(regexZIP,startfilecounter)
+        regexJPG = "ffd8(.*?)ffd9"
+        print("JPG")
+        startfilecounter = RecoverFiles(regexJPG,startfilecounter)
+        regexPNG = "89504e47(.*?)49454e44ae426082"
+        startfilecounter = RecoverFiles(regexPNG,startfilecounter)
+        regexDOCX = "504B030414000600(.*?)504b0506[0-9|A-F]{36}"
+        startfilecounter = RecoverFiles(regexDOCX,startfilecounter)
+        regexBMP = "424D[0-9|A-F]{6}"
+        #bmpsize = regexBMP[2-9]
+        regexAVI = "52494646[0-9|A-F]{8}215649204C495354"
 except FileNotFoundError:
     print("File was not found")
     exit()
-    
-# Creating project file into hexdump
-hexdump = binascii.hexlify(data)
-
-# Regular expressions of file header and file footer
-regexMPG = "000001bx(.*?)000001b7"
-RecoverFiles(regexMPG)
-regexPDFOne = "25504446(.*?)2525454f46"
-regexPDFTwo = "25504446(.*?)0A2525454F460A" 
-regexPDFThree = "25504446(.*?)0D0A2525454F460D0A"
-regexPDFFour = "25504446(.*?)0D2525454F460D"
-RecoverFiles(regexPDF)
-regexGIF = "47494638(.*?)003b"
-RecoverFiles(regexGIF)
-regexZIP = "504b0304(.*?)504b0506"
-RecoverFiles(regexZIP)
-regexJPG = "ffd8(.*?)ffd9"
-RecoverFiles(regexJPG)
-regexPNG = "89504e47(.*?)49454e44ae426082"
-RecoverFiles(regexPNG)
-regexDOCX = "504B030414000600(.*?)504b0506[0-9|A-F]{36}"
-RecoverFiles(regexDOCX)
-regexBMP = "424D[0-9|A-F]{6}"
-#bmpsize = regexBMP[2-9]
-regexAVI = "52494646[0-9|A-F]{8}215649204C495354"
+        
+        
 
 
 
+#if __name__ == "__main__":
+#    main()
 
-def RecoverFiles(regularEx): 
-    # Find values between file header and file footer
-    content = re.findall(regularEx, hexdump.decode())
-    # If found proceed, else abort
-    #
-    counter = len(content)
-    while (counter > 0):
-        if content == regexPNG:
-            print("File Name")
-            print("Start Offset: ")
-            print("End Offset: ")
-        elif content==regexGIF:
-            print("File Name")
-            print("Start Offset: ")
-            print("End Offset: ")
-        elif (content == regexJPG):
-            print("File Name")
-            print("Start Offset: ")
-            print("End Offset: ")
-        elif content == regexZIP:
-            print("File Name")
-            print("Start Offset: ")
-            print("End Offset: ")
-        elif content == regexMPG:
-            print("File Name")
-            print("Start Offset: ")
-            print("End Offset: ")
-        elif content == regexDOCX:
-            print("File Name")
-            print("Start Offset: ")
-            print("End Offset: ")
-        elif content == regexPDFOne or content == regexPDFTwo or content == regexPDFThree or content == regexPDFFour:
-            print("File Name")
-            print("Start Offset: ")
-            print("End Offset: ")
-        elif content == regexBMP:
-            print("File Name")
-            print("Start Offset: ")
-            print("End Offset: ")
-        elif content == regexAVI:
-            print("File Name")
-            print("Start Offset: ")
-            print("End Offset: ")
-        else:
-            print("no such file available")
-        counter = counter - 1 
 
     
 # recover user generated files without corruption and generate 
@@ -111,4 +130,5 @@ def hash(file)
         print("SHA-256: " + readable_hash'\n')
         print("\n")
 '''
+
 
