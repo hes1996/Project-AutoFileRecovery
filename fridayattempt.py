@@ -17,8 +17,8 @@ from re import match
 
 regexPNG = "89504e470d0a1a0a*(.*?)49454e44ae426082"
 regexGIF = "474946383761*(.*?)003b"
-regexJPG = "ffd8*(.*?)ffd9"
-regexZIP = "504b0304*(.*?)504b0506"
+regexJPG = "ffd8*(.*?)ffd9" # maybe could use "ffd8ffe*(.*?)ffd9" instead
+# regexZIP = "504b0304*(.*?)504b0506" - No longer required
 regexMPG = "000001ba*(.*?)000001b7"
 regexDOCX = "504b030414000600*(.*?)504b0506[\w]{36}"
 regexPDFOne = "25504446*(.*?)0a2525454f46"
@@ -32,14 +32,14 @@ startfilecounter = 0
 def main():
     def RecoverFiles(regularEx,filecounterIn): 
     # Find values between file header and file footer
-        mylist = re.compile(regularEx)
+        mylist = re.compile(regularEx) # This scans through the disk image and makes a list of all found matching files
         #content = list(filter(mylist.match, hexdump.decode()))
         #content = re.findall(regularEx, hexdump.decode())
         #content = re.finditer(mylist, hexdump.decode())
         counter = 0
         i = filecounterIn
         
-        for match in mylist.finditer(hexdump.decode()):
+        for match in mylist.finditer(hexdump.decode()): # This scans that list only for matching headers and footers
             #print("This is limit: " + str(len(content)))
             #print("This counter is: " + str(counter))
             #if content[counter].find(regexPNG) != -1:
@@ -47,9 +47,16 @@ def main():
             #i += 1
             #    counter += 1
             if  regexPNG == regularEx:
-                print("File" + str(i) + ".png Start Offset: "+ str(match.start()) + " End Offset: "+ str(match.end())) 
-                i += 1
-                counter += 1    
+		# Need a for statement to actually save all of the content to the filename so hash will be correct
+		# For j in mylist:
+		#	fullFile = "89504e470d0a1a0a" + j + "49454e44ae426082"
+		#	fullFile is still in hexdump, so we convert back to binary
+		#	convFullFile = binascii.a2b_hex(fullFile)
+                print("File" + str(i) + ".png Start Offset: "+ str(match.start()) + " End Offset: "+ str(match.end())) # This would be inside for statement
+                i += 1 # This would be inside for statement
+                counter += 1 # This would be before for statement
+		# This is where we call the hash function. It will be inside the for statement
+		# hash(convFullFile)
             elif regexGIF == regularEx: 
                 print("File" + str(i) + ".gif Start Offset: " + str(match.start()) + " End Offset: " + str(match.end()))
                 i = i + 1
