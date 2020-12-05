@@ -41,13 +41,9 @@ for SOF in SOF_list:
     for EOF in EOF_list:
         if int(SOF) < int(EOF):
             subdata=data[SOF:EOF]
-            carve_filename="file"+ str(filecounter) + ".jpg Start Offset: 0x" + str(SOF)+ " End Offset: 0x" + str(EOF_list[i])
-            '''
-            carve_obj=open(carve_filename,'wb')
-            carve_obj.write(subdata)
-            carve_obj.close()
-            '''
-            filename="Carve1_"+str(SOF)+"_"+str(EOF_list[i])+".jpg" 
+            print(type(SOF))
+            carve_filename="file"+ str(filecounter) + ".jpg Start Offset: 0x" + str(SOF)+ " End Offset: 0x" + str(EOF)
+            filename="Carve1_"+str(SOF)+"_"+str(EOF)+".jpg" 
             carve_obj=open(filename,'wb')
             carve_obj.write(subdata)
             carve_obj.close()
@@ -61,20 +57,19 @@ SOF_list=[match.start() for match in re.finditer(re.escape(PNG_SOF),data)]
 EOF_list=[match.start() for match in re.finditer(re.escape(PNG_EOF),data)]
 i = 0
 for SOF in SOF_list:
-    subdata=data[SOF:EOF_list[i]+2]
-    carve_filename="file"+ str(filecounter) + ".png Start Offset: 0x" + str(SOF)+ " End Offset: 0x" + str(EOF_list[i])
-    filename="Carve1_"+str(SOF)+"_"+str(EOF_list[i])+".png" 
-    carve_obj=open(filename,'wb')
-    '''
-    carve_obj=open(carve_filename,'wb')
-    carve_obj.write(subdata)
-    carve_obj.close()
-    i=i+1
-    '''    
-    i=i+1  
-    print(carve_filename)
-    hash(carve_obj)
-    filecounter += 1
+    for EOF in EOF_list:
+        if int(SOF) < int(EOF):
+            subdata=data[SOF:EOF]
+            carve_filename="file"+ str(filecounter) + ".png Start Offset: 0x" + str(SOF)+ " End Offset: 0x" + str(EOF)
+            filename="file"+ str(filecounter) + "_"+str(SOF)+"_"+str(EOF)+".png" 
+            carve_obj=open(filename,'wb')
+            carve_obj.write(subdata)
+            carve_obj.close()
+            i=i+1  
+            print(carve_filename)
+            hash(carve_obj)
+            filecounter += 1
+            break
 
 SOF_list=[match.start() for match in re.finditer(re.escape(DOCX_SOF),data)]
 EOF_list=[match.start() for match in re.finditer(re.escape(DOCX_EOF),data)]
